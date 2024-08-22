@@ -15,7 +15,6 @@ condaInstall.sh - edit file to install conda environment on Linux
 ## Python source code files, configuration, models and scripts ##
 
 Python npy files with sorted results of detections, filtering and arthropods classification (2020, 2021) must be downloaded unzipped and copied to the subfolder python.
-
 https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive_link
  
 ### Getting started ###
@@ -49,7 +48,7 @@ yolov5/utils - YOLO source code with modification for motion-informed enhancemen
 ### Training YOLOv5 insect detector ###
 yolov5/trainF1.py
 
-yolov5/trainInsectsNI-I21.sh - train insect detector based on dataset/Insects
+yolov5/trainInsectsNI-I21.sh - train insect detector based on datasets/Insects
 
 yolov5/trainInsectsNI-I21m.sh (MIE)
 
@@ -63,7 +62,6 @@ yolov5/testInsectsNI-I21.sh (MIE)
 ## Detecting arthropods in a time-lapse image sequence (MIE) ##
 
 The YOLOv5 weights for detection of arthropods trained with motion-informed enhancement or without can be downloaded from:
-
 https://drive.google.com/file/d/1u7z4GABrNtTRoBkaxhdeu5D4K50Bqaqu/view?usp=drive_link
 
 yolov5/insectsNI21-bestF1-1280m6.pt - YOLOv5m6 medium model trained to detect arthropods
@@ -85,6 +83,33 @@ Content of *.csv files which contain lines for each detection (YYYYMMDD.csv):
 ## Filtering YOLOv5 detections and classify arthropods in 19 classes ##
 
 python/filterAndClassifyInsects19ClsMIE.py - Used images and YOLOv5 CSV files to filer detections and classify arthropods in 19 classes
+
+Content of *.csv files which contain lines for each detection (YYYYMMDD.csv):
+
+	year,trap,date,time,detectConf,detectId,x1,y1,x2,y2,fileName
+
+where the detectId will be updated with the following classification codes:
+-2 - No movement due to same position in image sequence  <br />
+-1 - Match filered, NSSD is below threshold  <br />
+0 - Ladybirds  <br />
+1 - Beetles  <br />
+2 - Plants  <br />
+3 - Bumblebees  <br />
+4 - Hoverflies  <br />
+5 - Butterflies  <br />
+6 - Spiders  <br />
+7 - Ants  <br />
+8 - Flies  <br />
+9 - True bugs  <br />
+10 - Isopods  <br />
+11 - Unspecified  <br />
+12 - Hymenoptera  <br />
+13 - Grasshoppers  <br />
+14 - R. fulva  <br />
+15 - Satyrines  <br />
+16 - Small Tortoiseshell  <br />
+17 - Dragonflies  <br />
+18 - Honeybees
 
 ## Training and validation of arthropod classifier ##
 
