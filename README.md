@@ -30,8 +30,7 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
 4. Run the python code to test and plot the abundance of arthropods and flower cover estimates
    (In the file it is possible to select year 2020 or 2021, detections with and without MIE, arthropods to plot)
 
-   - python FlowerAndInsectsSortedShowPlots.py
-   - 
+   - python python/FlowerAndInsectsSortedShowPlots.py
 
 # Estimate of flower content #
 
