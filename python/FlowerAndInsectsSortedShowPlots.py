@@ -784,6 +784,6 @@ if __name__=='__main__':
            
     #plotSpecialInsectFlowers(plotDir, insectLabel, imageFlowers, insectsList, plotPollinators=False)
     # Grassland, Urband Agriculture
-    plotSpecialInsectFlowersInCameras(plotDir, insectLabel, imageFlowers, insectsList, habitat="Urban", plotPollinators=False)
+    plotSpecialInsectFlowersInCameras(plotDir, insectLabel, imageFlowers, insectsList, habitat="Grassland", plotPollinators=False) # habitat= "Urban", "Grassland", "Agriculture"
     
     

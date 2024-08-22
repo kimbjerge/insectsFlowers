@@ -31,6 +31,8 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
    (In the file it is possible to select year 2020 or 2021, detections with and without MIE, arthropods to plot)
 
    - python python/FlowerAndInsectsSortedShowPlots.py
+ 
+![Alt text](NAIM34_Insects_Flowers.jpg)
 
 # Estimate of flower content #
 
