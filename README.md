@@ -78,7 +78,7 @@ yolov5/detectNI21v2m.sh (MIE)
 
 Content of *.csv files which contain lines for each detection (YYYYMMDD.csv):
 
-	year,trap,date,time,detectConf,detectId,x1,y1,x2,y2,fileName
+	year,camera,date,time,confidence,detectId,x1,y1,x2,y2,fileName
 
 ## Filtering YOLOv5 detections and classify arthropods in 19 classes ##
 
@@ -86,10 +86,11 @@ python/filterAndClassifyInsects19ClsMIE.py - Used images and YOLOv5 CSV files to
 
 Content of *.csv files which contain lines for each detection (YYYYMMDD.csv):
 
-	year,trap,date,time,detectConf,detectId,x1,y1,x2,y2,fileName
+	year,camera,date,time,confidence,detectId,x1,y1,x2,y2,fileName
 
 where the detectId will be updated with the following classification codes:
--2 - No movement due to same position in image sequence  <br />
+
+-2 - No movement, detection in same position of the image sequence  <br />
 -1 - Match filered, NSSD is below threshold  <br />
 0 - Ladybirds  <br />
 1 - Beetles  <br />
