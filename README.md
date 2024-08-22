@@ -31,6 +31,23 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
    (In the file it is possible to select year 2020 or 2021, detections with and without MIE, arthropods to plot)
 
    - python FlowerAndInsectsSortedShowPlots.py
+   - 
+
+# Semantic, Color and Combined - Estimate of flower content #
+
+## Flower cover estimation based on combinded sematic and color segmentation ##
+
+python/weightsFlowers30NormBackRedV2b.pt - must be downloaded from:
+https://drive.google.com/file/d/19i4MMh93nejticiBtAeFsNw4vEqgrFyy/view?usp=drive_link
+
+python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation and colors to estimate flower cover
+
+### Training flower semantic segmentation model ###
+
+DeepLabv3/TrainFlowers.sh - Trains flower sematic segmenation DeepLabv3 model based on datasets/Flowers
+
+
+# Detection, Filtering and Classification - Classified arthropods in taxanomic ranks #
 
 ## Training and testing insect detector model ##
 
@@ -118,18 +135,7 @@ python/training-ClassificationNetTest19Cls.py - Possible to train ResNetv50 and 
 
 python/test-ClassificatonNetTest19Cls.py - Validating trained models
 
-## Flower cover estimation based on combinded sematic and color segmentation ##
-
-python/weightsFlowers30NormBackRedV2b.pt - must be downloaded from:
-https://drive.google.com/file/d/19i4MMh93nejticiBtAeFsNw4vEqgrFyy/view?usp=drive_link
-
-python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation and colors to estimate flower cover
-
-### Training flower semantic segmentation model ###
-
-DeepLabv3/TrainFlowers.sh - Trains flower sematic segmenation DeepLabv3 model based on datasets/Flowers
-
-## Plotting and printing results ##
+# Plotting and printing results for monitoring in 2020 and 2021#
 
 FlowerAndInsectsSortedShowPlots.py - Plotting results for the 19 classes of arthropods and flower cover estimates based on time-lapse recordings in 2020 and 2021
 
