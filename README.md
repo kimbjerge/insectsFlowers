@@ -33,7 +33,7 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
    - python FlowerAndInsectsSortedShowPlots.py
    - 
 
-# Semantic, Color and Combined - Estimate of flower content #
+# Estimate of flower content #
 
 ## Flower cover estimation based on combinded sematic and color segmentation ##
 
@@ -47,7 +47,7 @@ python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation 
 DeepLabv3/TrainFlowers.sh - Trains flower sematic segmenation DeepLabv3 model based on datasets/Flowers
 
 
-# Detection, Filtering and Classification - Classified arthropods in taxanomic ranks #
+# Classified arthropods in taxanomic ranks #
 
 ## Training and testing insect detector model ##
 
