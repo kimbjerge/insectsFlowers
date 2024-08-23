@@ -9,6 +9,9 @@ https://www.biorxiv.org/content/10.1101/2024.04.12.589205v2.full
 
 ![Alt text](ProcessPipeline.png)
 
+The detection of insects with motion-informed enhancement (MIE) is described and published in the paper: "Object Detection of Small Insects in Time-Lapse Camera Recordings".
+https://www.mdpi.com/1424-8220/23/16/7242
+
 ## Python environment files ##
 envreq.txt - environment requirements
 
