@@ -4,14 +4,6 @@ This code has been modified from https://github.com/msminhas93/DeepLabv3FineTuni
 
 This repository contains code for Fine Tuning [DeepLabV3 ResNet101](https://arxiv.org/abs/1706.05587) in PyTorch. The model is from the [torchvision module](https://pytorch.org/docs/stable/torchvision/models.html#semantic-segmentation). The tutorial can be found here: [https://towardsdatascience.com/transfer-learning-for-segmentation-using-deeplabv3-in-pytorch-f770863d6a42?sk=b403331a7b30c02bff165a93823a5524](https://towardsdatascience.com/transfer-learning-for-segmentation-using-deeplabv3-in-pytorch-f770863d6a42?sk=b403331a7b30c02bff165a93823a5524)
 
-It was original fine tuned the model for the [CrackForest](https://github.com/cuilimeng/CrackForest-dataset) data-set. 
-
-The model was fine tuned for 25 epochs and achieves an testing AUROC value of 0.842.
-
-The segmentation output of the model on a sample image are shown below.
-
-![Sample segmentation output](./CFExp/SegmentationOutput.png)
-
 ### Installing dependencies
 
 #### Using pip
