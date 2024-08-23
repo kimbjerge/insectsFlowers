@@ -202,7 +202,7 @@ def colorMaskFlowers(pathImage, imgSize, showMasks=False):
     
     return mask_red, mask_white, mask_yellow, flowers_percentage, img, maskedImage
 
-def SegmentImageMethodPIL(filename, model, camera, date, imgSize, threshold=0.3, plotResult=True):
+def SegmentImageMethodPIL(filename, model, camera, date, imgSize, use2021data, threshold=0.3, plotResult=True):
     
     if os.path.exists(filename) == False:
         return 0, 0, 0, 0
@@ -257,9 +257,14 @@ def SegmentImageMethodPIL(filename, model, camera, date, imgSize, threshold=0.3,
     resWY = cv.bitwise_or(resWhite, resYellow) 
     maskedCombinedImage = cv.bitwise_or(resWY, resRed)
      
+    if use2021data:
+        validCameras = validCameras2021
+    else:
+        validCameras = validCameras2020
+        
     # Plot original image and flower mask
-    if camera in validCameras2020 and plotResult:
     #if camera in validCameras2021 and plotResult:
+    if camera in validCameras and plotResult:
         fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(24, 24), # nrows=4
                                  sharex=True, sharey=True)
         ax = axes.ravel()
@@ -282,16 +287,15 @@ def SegmentImageMethodPIL(filename, model, camera, date, imgSize, threshold=0.3,
         ax[1].imshow(cv.cvtColor(maskedCombinedImage, cv.COLOR_BGR2RGB))
         flowersStr = "{:.2f}".format(combined_flow_percentage*100)
         ax[1].set_title('Flowers ' + camera + ' ' + date + ' (' + flowersStr + '%)' )   
-        # #for a in ax:
-        #    a.axis('off')
         
         fig.tight_layout()
-        #KBE??? 
         nameSplit = filename.split('/')
         imgName = nameSplit[4] + '-' + nameSplit[5] + '-'  + nameSplit[6] + '-'  + nameSplit[7].split('.')[0] + '-' + flowersStr.replace('.', '_') + '.jpg'
-        fig.savefig("../Data_2020_SegCombined_1200/" + imgName)
-        #fig.savefig("../Data_2021_SegCombined_1200/" + imgName)
-        #fig.savefig("../Data_2021_SegCombined_1200/" + camera + "_" + date.replace(':', '-') + ".jpg")
+        if use2021data:
+            fig.savefig("./Data_2021_SegCombined/" + imgName)
+        else:
+            fig.savefig("./Data_2020_SegCombined/" + imgName)
+            
         plt.show()
         fig.clear()
         plt.close()
@@ -309,7 +313,7 @@ def browseTestImages(path, model, imgSize=(704, 396)):
         for img_path in glob.glob(os.path.join(directory_path, "*.JPG")):
             print(img_path)     
             
-            yellow, white, red, flowers = SegmentImageMethodPIL(img_path, model, "NAIM01", "2021:08:03", imgSize=imgSize)
+            yellow, white, red, flowers = SegmentImageMethodPIL(img_path, model, "NAIM01", "2021:08:03", imgSize=imgSize, use2021data=True)
             print(yellow, white, red, flowers)
 
 
@@ -345,11 +349,14 @@ def getUsedCameras(images, usedCameras, selectRandom=False, numbers=500):
 #       images without flowers stored to imagesTest/Data_2021n/
 # if analyseImages == True then
 #       image analyzed for flowers data appended an stored in FlowersInImages_HSV_1200_new.npy
-def browseImage(path, model, analyzeImages=True, imgSize=(704, 396)):
+def browseImage(path, model, use2021data, analyzeImages=True, imgSize=(704, 396)):
     
     # Temp file should be placed on local drive to make loading faster
-    #savedSortedImagesPath = "C:/IHAK/SemanticSegmentation/Sorted_images.npy" # Faster to save and load from local drive 2021
-    savedSortedImagesPath = "C:/IHAK/SemanticSegmentation/Sorted_images_2020.npy" # Faster to save and load from local drive 2020
+    if use2021data:
+        savedSortedImagesPath = "./Sorted_images_2021.npy" # Faster to save and load from local drive 2020
+    else:
+        savedSortedImagesPath = "./Sorted_images_2020.npy" # Faster to save and load from local drive 2020
+    
     if os.path.exists(savedSortedImagesPath):
         print("Uses saved sorted image list from", savedSortedImagesPath)
         images = np.load(savedSortedImagesPath)
@@ -399,7 +406,7 @@ def browseImage(path, model, analyzeImages=True, imgSize=(704, 396)):
                     splitSrcFile = sourceFile.split("/")
                     dstFile = splitSrcFile[4] + '_' + splitSrcFile[5] + '_' + splitSrcFile[6] + '_' + splitSrcFile[7] 
                     #print(dstFile)
-                    yellow, white, red, flowers = SegmentImageMethodPIL(sourceFile, model, camera, date, imgSize=imgSize)
+                    yellow, white, red, flowers = SegmentImageMethodPIL(sourceFile, model, camera, date, imgSize=imgSize, use2021data=use2021data)
                     if flowers > 0.02: # No flowers if less 2.0% or 1.0%
                         print("Flowers ", dstFile)
                         shutil.copyfile(sourceFile, dstPathf+dstFile)
@@ -410,12 +417,15 @@ def browseImage(path, model, analyzeImages=True, imgSize=(704, 396)):
             else:
                 # Analyze images
                 print(imageData)
-                yellow, white, red, flowers = SegmentImageMethodPIL(sourceFile, model, camera, date, imgSize=imgSize)
+                yellow, white, red, flowers = SegmentImageMethodPIL(sourceFile, model, camera, date, imgSize=imgSize, use2021data=use2021data)
                 print("Flowers %.2f (Yellow %.2f White %.2f Red %.2f)" % (flowers*100, yellow*100, white*100, red*100) )
                 imageFlowers.append([camera, sourceFile, date, time, yellow, white, red, flowers])
             
-    np.save("FlowersInImages_Combined_2020_1200_new.npy", imageFlowers)
-
+    if use2021data:
+        np.save("FlowersInImages_Combined_2021_1200_new.npy", imageFlowers)
+    else:
+        np.save("FlowersInImages_Combined_2020_1200_new.npy", imageFlowers)
+        
 
 def expMA(data, alpha=0.4):
 #Expontentiel moving average filter    
@@ -428,7 +438,7 @@ def expMA(data, alpha=0.4):
         y.append(ynew)   
     return y
 
-def plotFlowers(filePath):
+def plotFlowers(filePath, use2021data):
     
     imageFlowers = np.load(filePath)
     
@@ -453,8 +463,10 @@ def plotFlowers(filePath):
             plt.title(camera)
             plt.xlabel("Day")
             plt.ylabel("Percentage of flowers")
-            #plt.savefig("../Data_2021_PlotsCombined/" + camera + "_" + "flowers" + ".jpg")
-            plt.savefig("../Data_2020_PlotsCombined/" + camera + "_" + "flowers" + ".jpg")
+            if use2021data:
+                plt.savefig("./Data_2021_PlotsCombined/" + camera + "_" + "flowers" + ".jpg")
+            else:
+                plt.savefig("./Data_2020_PlotsCombined/" + camera + "_" + "flowers" + ".jpg")
             plt.show()
             #plt.plot(white, 'bo')
             #plt.show()
@@ -509,12 +521,12 @@ def calcFlowerPrecision(path):
 #%% MAIN
 if __name__=='__main__':
     
-    analyseImages = True
+    use2021data = True
+    analyseImages = True # Set to True when original raw camera images should be analysed, else plotting flower cover for each camera
     
     #print(calcFlowerPrecision('O:/Tech_TTH-KBE/NI_2/Kim/Data_2021_SegCombined_1200/'))
-    print(calcFlowerPrecision('O:/Tech_TTH-KBE/NI_2/Kim/Data_2020_SegCombined_1200/'))
+    #print(calcFlowerPrecision('O:/Tech_TTH-KBE/NI_2/Kim/Data_2020_SegCombined_1200/'))
     
-
     if analyseImages:
  
         #modelName = "C:/IHAK/SemanticSegmentation/weightsFlowers30NormBackRedV2b.pt" # Faster to load from local drive
@@ -523,16 +535,20 @@ if __name__=='__main__':
         model = torch.load(modelName, map_location=torch.device('cpu'))
         model.eval()
     
-        #browseTestImages(path, model)
- 
-        path = "O:/Tech_TTH-KBE/NI_2/Data_2020/"
-        #path = "O:/Tech_TTH-KBE/NI_2/Data_2021/"
-        #path = "/mnt/Dfs/Tech_TTH-KBE/NI_2/Data_2021/"
-        browseImage(path, model, analyzeImages=True)
+        if use2021data:
+            path = "O:/Tech_TTH-KBE/NI_2/Data_2021/" # Path to all images from all traps monitored in 2021
+            #path = "/mnt/Dfs/Tech_TTH-KBE/NI_2/Data_2021/"
+        else:
+            path = "O:/Tech_TTH-KBE/NI_2/Data_2020/" # Path to all images from all traps monitored in 2020
+            #path = "/mnt/Dfs/Tech_TTH-KBE/NI_2/Data_2020/"
+            
+        browseImage(path, model, use2021data, analyzeImages=True)
     else:
     
-        #fileName = "FlowersInImages_Combined_1200_30_0_3v2b_Final.npy" # Same dataset as below, but camera fixed 2021
-        fileName = "FlowersInImages_Combined_2020_1200_30_0_3v2b_Final.npy" # Same dataset as below, but camera fixed 2020
-        #fileName = "FlowersInImages_Combined_1200_30_0_3v2b.npy"
-        plotFlowers(fileName)
+        if use2021data:
+            fileName = "FlowersInImages_Combined_2021_1200_30_0_3v2b_Final.npy" # Same dataset as below, but camera fixed 2020
+        else:
+            fileName = "FlowersInImages_Combined_2020_1200_30_0_3v2b_Final.npy" # Same dataset as below, but camera fixed 2020
+            
+        plotFlowers(fileName, use2021data)
     

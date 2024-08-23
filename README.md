@@ -41,7 +41,8 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
 python/weightsFlowers30NormBackRedV2b.pt - must be downloaded from:
 https://drive.google.com/file/d/19i4MMh93nejticiBtAeFsNw4vEqgrFyy/view?usp=drive_link
 
-python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation and colors to estimate flower cover
+python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation and colors to estimate flower cover, plotting flower cover for each camera
+(The output will be the "Sorted_images_20xx.npy" and the "FlowersInImages_combined_20xx_1200_new.npy" when analyseImages=True see code)
 
 ### Training flower semantic segmentation model ###
 
