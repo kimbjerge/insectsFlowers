@@ -18,13 +18,6 @@ import torch
 from torchvision import transforms
 
 
-# saveCameras = [#"NAIM06",
-#                 "NAIM21",
-#                 "NAIM23",
-#                 #"NAIM34",
-#                 "NAIM58_2"
-#                 ]
-
 validCameras2021 =  [
     "ECOS01",
     "ECOS02",
@@ -530,8 +523,6 @@ if __name__=='__main__':
         model = torch.load(modelName, map_location=torch.device('cpu'))
         model.eval()
     
-        #path = "O:/Tech_TTH-KBE/NI_2/Kim/images/*"
-        #path = "O:/Tech_TTH-KBE/NI_2/Kim/imagesTest/*"
         #browseTestImages(path, model)
  
         path = "O:/Tech_TTH-KBE/NI_2/Data_2020/"
@@ -543,18 +534,5 @@ if __name__=='__main__':
         #fileName = "FlowersInImages_Combined_1200_30_0_3v2b_Final.npy" # Same dataset as below, but camera fixed 2021
         fileName = "FlowersInImages_Combined_2020_1200_30_0_3v2b_Final.npy" # Same dataset as below, but camera fixed 2020
         #fileName = "FlowersInImages_Combined_1200_30_0_3v2b.npy"
-        #fileName = "FlowersInImages_Combined_1000.npy" 
-        #fileName = "FlowersInImages_Combined_1400.npy" 
-        #fileName = "FlowersInImages_Combined_1600.npy" 
         plotFlowers(fileName)
     
-
-    # 2021: 4524328 images
-    # All 500 TP above 0.0%
-    # (932.64, 222.97999999999993, 0.8070472992852322) all TP
-
-    # 2021: 5932597 images
-    # All 500 TP above 0.0%
-    # (413.8999999999996, 8.040000000000003, 0.9809451580793477) all TP
-    # All TP above 0.1%
-    # TP flower area 410.34 FP flower area 8.040000000000003 Precision 0.9807830202208518
