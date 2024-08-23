@@ -522,7 +522,7 @@ def calcFlowerPrecision(path):
 if __name__=='__main__':
     
     use2021data = True
-    analyseImages = True # Set to True when original raw camera images should be analysed, else plotting flower cover for each camera
+    analyseImages = False # Set to True when original raw camera images should be analysed, else plotting flower cover for each camera
     
     #print(calcFlowerPrecision('O:/Tech_TTH-KBE/NI_2/Kim/Data_2021_SegCombined_1200/'))
     #print(calcFlowerPrecision('O:/Tech_TTH-KBE/NI_2/Kim/Data_2020_SegCombined_1200/'))

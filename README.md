@@ -140,4 +140,4 @@ python/test-ClassificatonNetTest19Cls.py - Validating trained models
 # Plotting results for monitoring in 2020 and 2021 #
 
 FlowerAndInsectsSortedShowPlots.py - Plotting results for the 19 classes of arthropods and flower cover estimates based on time-lapse recordings in 2020 and 2021
-
+Plots saved to Data_20xx_PlotsFlowersMixed_Habitat
