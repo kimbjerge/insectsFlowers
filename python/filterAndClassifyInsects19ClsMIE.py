@@ -130,12 +130,18 @@ def filter_predict_crops(classifier, img_path, system, crops_dic_insect, crops_d
                 
 if __name__=='__main__': 
     
-    
+    use2021data = True
+
     #path = 'O:/Tech_TTH-KBE/NI_2/'
     path = '/mnt/Dfs/Tech_TTH-KBE/NI_2/'
-    dir_csv = path + 'Data_CSV_NI21/2021-csv-MIE/'
-    pathInsectCrop = './Data_2021_19cls_MIE/' # insect images
-    pathBackCrop = './Data_2021_19cls_MIE/Background/' # background images
+    if use2021data:
+        dir_csv = path + '../Data_CSV_NI21/2021-csv-MIE/'
+        pathInsectCrop = './Data_2021_19cls_MIE/' # insect images
+        pathBackCrop = './Data_2021_19cls_MIE/Background/' # background images
+    else:
+        dir_csv = path + '../Data_CSV_NI21/2022-csv-MIE/'
+        pathInsectCrop = './Data_2022_19cls_MIE/' # insect images
+        pathBackCrop = './Data_2022_19cls_MIE/Background/' # background images
     
     threshold = [0, 0, 0, 0, 0, 0, 0, 0, 0] 
    
@@ -162,7 +168,10 @@ if __name__=='__main__':
             count_insects += count
             count_noMove += countNoMove
             count_Match += countMatch
-            save_predictions(predictions, pathInsectCrop + 'result-2021-MIE.csv')
+            if use2021data:
+                save_predictions(predictions, pathInsectCrop + 'result-2021-MIE.csv')
+            else:
+                save_predictions(predictions, pathInsectCrop + 'result-2020-MIE.csv')
     
     print("No movement, Match background, Insects", count_noMove, count_Match, count_insects)
  
