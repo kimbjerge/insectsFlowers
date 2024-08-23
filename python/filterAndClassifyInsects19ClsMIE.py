@@ -135,11 +135,11 @@ if __name__=='__main__':
     #path = 'O:/Tech_TTH-KBE/NI_2/'
     path = '/mnt/Dfs/Tech_TTH-KBE/NI_2/'
     if use2021data:
-        dir_csv = path + '../Data_CSV_NI21/2021-csv-MIE/'
+        dir_csv = '../Data_CSV_NI21/2021-csv-MIE/'
         pathInsectCrop = './Data_2021_19cls_MIE/' # insect images
         pathBackCrop = './Data_2021_19cls_MIE/Background/' # background images
     else:
-        dir_csv = path + '../Data_CSV_NI21/2022-csv-MIE/'
+        dir_csv = '../Data_CSV_NI21/2022-csv-MIE/'
         pathInsectCrop = './Data_2022_19cls_MIE/' # insect images
         pathBackCrop = './Data_2022_19cls_MIE/Background/' # background images
     
