@@ -1,6 +1,7 @@
 # Time-lapse monitoring of insects in floral enviroments #
 This project contains Python code for processing time-lapse images from insect camera traps. (detection, classification and floral cover estimation)
-The repository contains the essential Python code for steps in figure below. (The training datasets are not included only the trained models and weights)
+The repository contains the essential Python code for steps in figure below. 
+(The raw images from 48 camera recordings and training datasets are not included only the result data (CSV, npy), source code (sh, py), trained models and weights (pt, h5))
 
 The work and results are described in the paper: "A deep learning pipeline for time-lapse camera monitoring of floral environments and insect populations".
 https://www.biorxiv.org/content/10.1101/2024.04.12.589205v2.full
