@@ -2,7 +2,7 @@
 This project contains Python code for processing time-lapse images from insect camera traps. (detection, classification and floral cover estimation)
 The repository contains Python code for steps in figure below. (The training datasets are not included only the trained models and weights)
 
-The work and results are described in the paper: "A deep learning pipeline for time-lapse camera monitoring of floral environments and insect populations"
+The work and results are described in the paper: "A deep learning pipeline for time-lapse camera monitoring of floral environments and insect populations".
 https://www.biorxiv.org/content/10.1101/2024.04.12.589205v2.full
 
 ![Alt text](ProcessPipeline.png)
@@ -41,8 +41,8 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
 python/weightsFlowers30NormBackRedV2b.pt - must be downloaded from:
 https://drive.google.com/file/d/19i4MMh93nejticiBtAeFsNw4vEqgrFyy/view?usp=drive_link
 
-python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation and colors to estimate flower cover, plotting flower cover for each camera
-(The output will be the "Sorted_images_20xx.npy" and the "FlowersInImages_combined_20xx_1200_new.npy" when analyseImages=True see code)
+python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation and colors to estimate flower cover, plotting flower cover for each camera.
+(The output will be the "Sorted_images_20xx.npy" and the "FlowersInImages_combined_20xx_1200_new.npy" when analyseImages=True see code.)
 
 ### Training flower semantic segmentation model ###
 
