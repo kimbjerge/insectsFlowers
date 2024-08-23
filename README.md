@@ -1,7 +1,8 @@
-# Time-lapse monitoring of insects in floral enviroments #
+# Time-lapse monitoring of insects in floral environment #
 This project contains Python code for processing time-lapse images from insect camera traps. (detection, classification and floral cover estimation)
-The repository contains the essential Python code for steps in figure below. 
-(The raw images from 48 camera recordings and training datasets are not included only the result data (CSV, npy), source code (sh, py), trained models and weights (pt, h5))
+The repository includes the essential Python code for the steps in the figure below. 
+(The raw images from 48 camera recordings in 2020 and 2021 and training datasets are not included. 
+ Only the result data (CSV, npy), source code (sh, py), trained models and weights (pt, h5) are available)
 
 The work and results are described in the paper: "A deep learning pipeline for time-lapse camera monitoring of floral environments and insect populations".
 https://www.biorxiv.org/content/10.1101/2024.04.12.589205v2.full
@@ -37,7 +38,7 @@ https://drive.google.com/file/d/1EGbX-dmutI_xtKIyZWJpk2WujLaUkAzL/view?usp=drive
 
 # Estimate of flower content #
 
-## Flower cover estimation based on combinded sematic and color segmentation ##
+## Flower cover estimation based on combined sematic and color segmentation ##
 
 python/weightsFlowers30NormBackRedV2b.pt - must be downloaded from:
 https://drive.google.com/file/d/19i4MMh93nejticiBtAeFsNw4vEqgrFyy/view?usp=drive_link
@@ -50,11 +51,11 @@ python/FlowerCombinedSegmentationShowImages.py - Combines semantic segmentation 
 DeepLabv3/TrainFlowers.sh - Trains flower sematic segmenation DeepLabv3 model based on datasets/Flowers
 
 
-# Classified arthropods in taxanomic ranks #
+# Classified arthropods in taxonomic ranks #
 
 ## Training and testing insect detector model ##
 
-### YOLOv5 for arthropods detection and localisation
+### YOLOv5 for arthropods detection and localization
 
 The modified YOLOv5 code is an older version of the repository from: https://github.com/ultralytics/yolov5
 
@@ -81,7 +82,7 @@ yolov5/testInsectsNI-I21.sh (MIE)
 
 ## Detecting arthropods in a time-lapse image sequence (MIE) ##
 
-The YOLOv5 weights for detection of arthropods trained with motion-informed enhancement or without can be downloaded from:
+The YOLOv5 weights for the detection of arthropods trained with motion-informed enhancement or without can be downloaded from:
 https://drive.google.com/file/d/1u7z4GABrNtTRoBkaxhdeu5D4K50Bqaqu/view?usp=drive_link
 
 yolov5/insectsNI21-bestF1-1280m6.pt - YOLOv5m6 medium model trained to detect arthropods
@@ -110,7 +111,7 @@ Content of *.csv files which contain lines for each detection (YYYYMMDD.csv):
 
 where the detectId will be updated with the following classification codes:
 
--2 - No movement, detection in same position of the image sequence  <br />
+-2 - No movement, detection in the same position of the image sequence  <br />
 -1 - Match filered, NSSD is below threshold  <br />
 0 - Ladybirds  <br />
 1 - Beetles  <br />
