@@ -278,9 +278,9 @@ if __name__=='__main__':
     models_dir = './models_save'   
     log_dir = './hparam_tuning19cls'
     
-    #modelType = "EfficientNetB4"
+    modelType = "EfficientNetB4"
     #modelType = "ResNet50v2"
-    modelType = "ConvNeXtBase"
+    #modelType = "ConvNeXtBase"
     
     base_layers_trainable = False    
     epochs = 80 # EfficientNetB4, ResNet50V2, ConvNeXtBase with imagenet
@@ -333,7 +333,7 @@ if __name__=='__main__':
         validation_data=validation_generator,
         validation_steps=int(NUM_TEST // batch_size),
         #workers=8,
-        verbose=1,
+        #verbose=1,
         callbacks=myCallbacks
         #callbacks=[
         #           tf.keras.callbacks.TensorBoard(log_dir),
