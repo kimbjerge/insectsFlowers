@@ -292,7 +292,7 @@ if __name__=='__main__':
     
     #NUM_DATA = 7360
     #NUM_DATA = 5745 # 10 classes
-    NUM_DATA = 13825 # 19 classes (13628)
+    NUM_DATA = 13817 # 19 classes (13628)
     TEST_SPLIT = 0.2
     NUM_TRAIN = NUM_DATA*(1.0 - TEST_SPLIT)
     NUM_TEST = NUM_DATA*TEST_SPLIT
@@ -328,10 +328,12 @@ if __name__=='__main__':
     #history = model.fit_generator(
     history = model.fit(
         train_generator,
-        steps_per_epoch=int(NUM_TRAIN // batch_size),
+        #steps_per_epoch=int(NUM_TRAIN // batch_size)-1,
+        steps_per_epoch=train_generator.samples // batch_size,
         epochs=epochs,
         validation_data=validation_generator,
-        validation_steps=int(NUM_TEST // batch_size),
+        #validation_steps=int(NUM_TEST // batch_size)-1,
+        validation_steps=validation_generator.samples // batch_size,
         #workers=8,
         #verbose=1,
         callbacks=myCallbacks
