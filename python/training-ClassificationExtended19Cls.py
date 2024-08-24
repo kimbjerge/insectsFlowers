@@ -42,7 +42,7 @@ def createConvNext(input_shape, number_of_classes, trainable):
     with strategy.scope():   # loading pretrained conv base model
     
         conv_base = tf.keras.applications.ConvNeXtBase(
-            model_name="convnext_base",
+            #model_name="convnext_base",
             include_top=False,
             include_preprocessing=True,
             weights= "imagenet",
