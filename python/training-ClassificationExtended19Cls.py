@@ -272,8 +272,8 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
 if __name__=='__main__': 
     
     # Directory with subdirectories for each class with cropped images in jpg format
-    data_dir = '../datasets/NI2-19cls'
-    #data_dir = '../../data/NI2-19cls'
+    #data_dir = '../datasets/NI2-19cls'
+    data_dir = '../../data/NI2-19cls'
     # Directory for saving h5 models for each run
     models_dir = './models_save'   
     log_dir = './hparam_tuning19cls'
@@ -329,11 +329,11 @@ if __name__=='__main__':
     history = model.fit(
         train_generator,
         #steps_per_epoch=int(NUM_TRAIN // batch_size)-1,
-        steps_per_epoch=train_generator.samples // batch_size,
+        #steps_per_epoch=train_generator.samples // batch_size,
         epochs=epochs,
         validation_data=validation_generator,
         #validation_steps=int(NUM_TEST // batch_size)-1,
-        validation_steps=validation_generator.samples // batch_size,
+        #validation_steps=validation_generator.samples // batch_size,
         #workers=8,
         #verbose=1,
         callbacks=myCallbacks
