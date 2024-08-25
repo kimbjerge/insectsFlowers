@@ -354,15 +354,21 @@ if __name__=='__main__':
         
     print("Saving best model as", best_model_name)
         
-    myCallbacks = [
-        tf.keras.callbacks.TensorBoard(log_dir),
-        ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
-        EarlyStopping(monitor='val_loss', patience=args.patience, restore_best_weights=True)
-    ]
     
     if args.modelName != "": 
         print("Finetuning model loading weights", args.modelName)
         model.load_weights(models_dir + '/' + args.modelName)
+        myCallbacks = [
+            tf.keras.callbacks.TensorBoard(log_dir),
+            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_accuracy', mode='max'),
+            EarlyStopping(monitor='val_accuracy', patience=args.patience, restore_best_weights=True)
+        ]
+    else:
+        myCallbacks = [
+            tf.keras.callbacks.TensorBoard(log_dir),
+            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
+            EarlyStopping(monitor='val_loss', patience=args.patience, restore_best_weights=True)
+        ]
  
     print(args)
     
