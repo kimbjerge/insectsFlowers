@@ -317,6 +317,11 @@ if __name__=='__main__':
     #modelType = "EfficientNetB4"
     #modelType = "ResNet50v2"
     #modelType = "ConvNeXtBase"
+
+    finetuneName = ""
+    if args.modelName != "":
+        args.trainBaseLayers = True
+        finetuneName = "-Finetuned"
     
     base_layers_trainable = args.trainBaseLayers    
     epochs = args.epochs
@@ -333,11 +338,6 @@ if __name__=='__main__':
 
     input_shape= (image_size, image_size, 3)
 
-    finetuneName = ""
-    if args.modelName != "":
-        base_layers_trainable = True
-        finetuneName = "-Finetuned"
-
     if modelType == "ResNet50v2":
         model = createResNetV2(input_shape, number_of_classes, base_layers_trainable)
     if modelType == "EfficientNetB4":
@@ -347,16 +347,6 @@ if __name__=='__main__':
         
     train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, imageRescaling=args.imageRescaling)
 
-    # Extend with examed hyperparameters
-    # HP_BATCH_SIZE = hp.HParam('batch_size', hp.Discrete([32]))
-    # HP_IMG_SIZE = hp.HParam('image_size', hp.Discrete([224]))
-
-    # hparams = {
-    #         HP_BATCH_SIZE: batch_size,
-    #         HP_IMG_SIZE: image_size
-    #         }
-    
-    #best_model_name = models_dir + '/' + modelType + '.model.keras'
     if args.imageRescaling:    
         best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled' + finetuneName + '.keras'
     else:
@@ -386,10 +376,6 @@ if __name__=='__main__':
         #workers=8,
         #verbose=1,
         callbacks=myCallbacks
-        #callbacks=[
-        #           tf.keras.callbacks.TensorBoard(log_dir),
-        #           hp.KerasCallback(log_dir, hparams),
-        #           ],
         #use_multiprocessing=True,
     )
     
@@ -402,11 +388,6 @@ if __name__=='__main__':
     report = classification_report(validation_generator.classes, y_pred, output_dict=True)
     f1_score = report['weighted avg']['f1-score']
     print('F1-score:', f1_score)
-
-    # if args.imageRescaling:    
-    #     model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.keras')
-    # else:
-    #     model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.keras')
 
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
