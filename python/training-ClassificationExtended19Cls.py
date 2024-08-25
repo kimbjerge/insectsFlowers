@@ -332,8 +332,12 @@ if __name__=='__main__':
     #         HP_IMG_SIZE: image_size
     #         }
     
-    best_model_name = models_dir + '/' + modelType + '.model.keras'
-    
+    #best_model_name = models_dir + '/' + modelType + '.model.keras'
+    if args.imageRescaling:    
+        best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.keras'
+    else:
+        best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.keras'
+        
     myCallbacks = [
         tf.keras.callbacks.TensorBoard(log_dir),
         ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
@@ -359,6 +363,7 @@ if __name__=='__main__':
         #use_multiprocessing=True,
     )
     
+    model = tf.keras.models.load_model(best_model_name)
     print('Model predict')
     Y_pred = model.predict(validation_generator) #, 173//batch_size+1
     y_pred = np.argmax(Y_pred, axis=1)
@@ -368,10 +373,10 @@ if __name__=='__main__':
     f1_score = report['weighted avg']['f1-score']
     print('F1-score:', f1_score)
 
-    if args.imageRescaling:    
-        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.keras')
-    else:
-        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.keras')
+    # if args.imageRescaling:    
+    #     model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.keras')
+    # else:
+    #     model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.keras')
 
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
