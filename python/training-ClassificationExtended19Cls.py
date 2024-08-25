@@ -53,7 +53,7 @@ def createConvNext(input_shape, number_of_classes, trainable):
             classes=1000
         )
         
-        for layer in conv_base.layers[-10:]:  # Unfreeze the last 10 layers
+        for layer in conv_base.layers: #[-10:]:  # Unfreeze the last 10 layers
             layer.trainable = trainable        
         conv_base.trainable = trainable
     
@@ -100,7 +100,7 @@ def createEfficientNet(input_shape, number_of_classes, trainable):
     
         conv_base = tf.keras.applications.EfficientNetB4(weights="imagenet", include_top=False, input_shape=input_shape)    
     
-        for layer in conv_base.layers[-10:]:  # Unfreeze the last 10 layers
+        for layer in conv_base.layers: #[-10:]:  # Unfreeze the last 10 layers
             layer.trainable = trainable        
         conv_base.trainable = trainable
     
@@ -184,7 +184,7 @@ def createResNetV2(input_shape, number_of_classes, trainable):
                                                   classes=number_of_classes,
                                                   classifier_activation="softmax")
         # Freeze layers for transfer learning
-        for layer in baseModel.layers[-10:]:  # Unfreeze the last 10 layers
+        for layer in baseModel.layers: #[-10:]:  # Unfreeze the last 10 layers
             layer.trainable = trainable
             
         # Used when using weights = "imagenet"
