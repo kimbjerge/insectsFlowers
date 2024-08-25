@@ -368,7 +368,10 @@ if __name__=='__main__':
     f1_score = report['weighted avg']['f1-score']
     print('F1-score:', f1_score)
 
-    model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '.h5')
+    if args.imageRescaling:    
+        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.h5')
+    else:
+        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.h5')
 
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
