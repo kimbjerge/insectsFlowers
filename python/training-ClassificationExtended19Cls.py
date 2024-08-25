@@ -67,14 +67,19 @@ def createConvNext(input_shape, number_of_classes, trainable):
         #model.add(layers.Dense(256, activation='relu', name="fc1"))
         model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
         
+        if trainable:
+            learning_rate = 0.00001 # Learning rate for finetuning
+        else:
+            learning_rate = 0.0001 
+            
         model.compile(
-            #optimizer=optimizers.RMSprop(lr=2e-5),a
-            optimizer=optimizers.Adam(learning_rate=0.0001),
+            optimizer=optimizers.Adam(learning_rate=learning_rate),
             loss="categorical_crossentropy",
             metrics=["acc"],
         )
-
         model.summary()
+
+        print("Learnable parameters:", model.count_params(), "learning rate", learning_rate)
         
     return model
 
@@ -94,8 +99,8 @@ def createEfficientNet(input_shape, number_of_classes, trainable):
     
         conv_base = tf.keras.applications.EfficientNetB4(weights="imagenet", include_top=False, input_shape=input_shape)    
     
-        #for layer in conv_base.layers:
-        #    layer.trainable = trainable        
+        for layer in conv_base.layers:
+            layer.trainable = trainable        
         conv_base.trainable = trainable
     
         dropout_rate = 0.2
@@ -119,15 +124,21 @@ def createEfficientNet(input_shape, number_of_classes, trainable):
             model.add(layers.Dropout(dropout_rate, name="dropout_out"))
         #model.add(layers.Dense(256, activation='relu', name="fc1"))
         model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
+
+        if trainable:
+            learning_rate = 0.00001 # Learning rate for finetuning
+        else:
+            learning_rate = 0.0001 
         
         model.compile(
-            #optimizer=optimizers.RMSprop(lr=2e-5),a
-            optimizer=optimizers.Adam(learning_rate=0.0001),
+            #optimizer=optimizers.RMSprop(lr=2e-5),
+            optimizer=optimizers.Adam(learning_rate=learning_rate),
             loss="categorical_crossentropy",
             metrics=["acc"],
         )
-
         model.summary()
+
+        print("Learnable parameters:", model.count_params(), "learning rate", learning_rate)
         
     return model
 
@@ -184,14 +195,20 @@ def createResNetV2(input_shape, number_of_classes, trainable):
         headModel = layers.Dense(number_of_classes, activation="softmax")(headModel)
         model = Model(inputs=baseModel.input, outputs=headModel)
         
+        if trainable:
+            learning_rate = 0.00001 # Learning rate for finetuning
+        else:
+            learning_rate = 0.0001 
+
         model.compile(
-            optimizer="adam", 
+            #optimizer="adam", 
+            optimizer=optimizers.Adam(learning_rate=learning_rate),
             loss="categorical_crossentropy", 
             metrics=["accuracy"]
         )
         model.summary()
     
-        print("Learnable parameters:", model.count_params())
+        print("Learnable parameters:", model.count_params(), "learning rate", learning_rate)
 
     return model    
 
@@ -282,7 +299,8 @@ if __name__=='__main__':
     parser.add_argument('--batch', default='32', type=int) # Batch size
     parser.add_argument('--trainBaseLayers', default='', type=bool) # Default false when no parameter (finetune base layers of model)
     parser.add_argument('--imageRescaling', default='', type=bool) # Default image rescaling False (Rescaling then multiply pixels with 1.0/255)
-        
+    parser.add_argument('--modelName', default='', type=str) # If modelName given then model will be finetuned and trainBaseLayers will be set to True
+
     args = parser.parse_args()
     
     # Directory with subdirectories for each class with cropped images in jpg format
@@ -314,13 +332,18 @@ if __name__=='__main__':
 
     input_shape= (image_size, image_size, 3)
 
+    finetuneName = ""
+    if args.ModelName != "":
+        base_layers_trainable = True
+        finetuneName = "-Finetuned"
+
     if modelType == "ResNet50v2":
         model = createResNetV2(input_shape, number_of_classes, base_layers_trainable)
     if modelType == "EfficientNetB4":
         model = createEfficientNet(input_shape, number_of_classes, base_layers_trainable)
     if modelType == "ConvNeXtBase":
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable)
-
+        
     train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, imageRescaling=args.imageRescaling)
 
     # Extend with examed hyperparameters
@@ -334,15 +357,19 @@ if __name__=='__main__':
     
     #best_model_name = models_dir + '/' + modelType + '.model.keras'
     if args.imageRescaling:    
-        best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.keras'
+        best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled' + finetuneName + '.keras'
     else:
-        best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.keras'
+        best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext' + finetuneName + '.keras'
         
     myCallbacks = [
         tf.keras.callbacks.TensorBoard(log_dir),
         ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
         EarlyStopping(monitor='val_loss', patience=args.patience, restore_best_weights=True)
     ]
+    
+    if args.ModelName != "": 
+        print("Finetuning model loading weights", args.ModelName)
+        model.load_weights(models_dir + '/' + args.ModelName)
  
     print(args)
     
@@ -386,6 +413,6 @@ if __name__=='__main__':
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    plt.savefig(modelType + '-confmatrix-19cls.png')
+    plt.savefig(modelType + '-Confmatrix-19cls' + finetuneName + '.png')
     plt.close(figure)
 
