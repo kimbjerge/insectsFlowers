@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Aug 23 11:03:46 2024
+Created on Sat Aug 24 11:03:46 2024
 
 @author: Kim Bjerge
     
@@ -11,6 +11,7 @@ import numpy as np
 import seaborn as sns
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import argparse
 
 ## LIMIT MEMORY - Can be uncommented
 config = tf.compat.v1.ConfigProto()
@@ -271,27 +272,42 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
 
 if __name__=='__main__': 
     
+    parser = argparse.ArgumentParser()
+    
+    # Arguments to be changed 
+    parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase
+    parser.add_argument('--dataDir', default='../datasets/NI2-19cls') # Path to dataset
+    parser.add_argument('--epochs', default='100', type=int) # Training epochs
+    parser.add_argument('--patience', default='5', type=int) # Patience epochs before early stopping (Min. validation loss)   
+    parser.add_argument('--batch', default='32', type=int) # Batch size
+    parser.add_argument('--trainBaseLayes', default='', type=bool) # Default false when no parameter (finetune base layers of model)
+        
+    args = parser.parse_args()
+    
+    print(args)
+ 
     # Directory with subdirectories for each class with cropped images in jpg format
     #data_dir = '../datasets/NI2-19cls'
-    data_dir = '../../data/NI2-19cls'
+    #data_dir = '../../data/NI2-19cls'
+    data_dir = args.dataDir
+    
     # Directory for saving h5 models for each run
     models_dir = './models_save'   
     log_dir = './hparam_tuning19cls'
     
-    modelType = "EfficientNetB4"
+    modelType = args.modelType
+    #modelType = "EfficientNetB4"
     #modelType = "ResNet50v2"
     #modelType = "ConvNeXtBase"
     
-    base_layers_trainable = False    
-    epochs = 80 # EfficientNetB4, ResNet50V2, ConvNeXtBase with imagenet
-    batch_size = 32
+    base_layers_trainable = args.trainBaseLayes    
+    epochs = args.epochs
+    batch_size = args.batch
 
     image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXtBase
     #image_size = 299 # InceptionV3
     number_of_classes = 19
     
-    #NUM_DATA = 7360
-    #NUM_DATA = 5745 # 10 classes
     NUM_DATA = 13817 # 19 classes (13628)
     TEST_SPLIT = 0.2
     NUM_TRAIN = NUM_DATA*(1.0 - TEST_SPLIT)
@@ -322,17 +338,15 @@ if __name__=='__main__':
     myCallbacks = [
         tf.keras.callbacks.TensorBoard(log_dir),
         ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
-        EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+        EarlyStopping(monitor='val_loss', patience=args.patience, restore_best_weights=True)
     ]
     
     #history = model.fit_generator(
     history = model.fit(
         train_generator,
-        #steps_per_epoch=int(NUM_TRAIN // batch_size)-1,
         #steps_per_epoch=train_generator.samples // batch_size,
         epochs=epochs,
         validation_data=validation_generator,
-        #validation_steps=int(NUM_TEST // batch_size)-1,
         #validation_steps=validation_generator.samples // batch_size,
         #workers=8,
         #verbose=1,
@@ -345,7 +359,6 @@ if __name__=='__main__':
     )
     
     print('Model predict')
-    #Y_pred = model.predict_generator(validation_generator) #, 173//batch_size+1
     Y_pred = model.predict(validation_generator) #, 173//batch_size+1
     y_pred = np.argmax(Y_pred, axis=1)
     print('Confusion Matrix')

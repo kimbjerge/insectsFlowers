@@ -1,201 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 21 13:48:46 2022
+Created on Sun Aug 25 10:56:46 2024
 
 @author: Kim Bjerge
     
-    Training insect classifier with ResNet or EfficientNet
+    Training insect classifier with ResNet50V2, EfficientNetB4, ConvNeXtBase
 """
 
-# Options: EfficientNetB0, EfficientNetB1, EfficientNetB2, EfficientNetB3
-# Higher the number, the more complex the model is.
-
-import io
 import numpy as np
 import seaborn as sns
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import argparse
 
 ## LIMIT MEMORY - Can be uncommented
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.4
 session = tf.compat.v1.Session(config=config)
 
-from tensorboard.plugins.hparams import api as hp
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras import Model
-from tensorflow.keras import models
-from tensorflow.keras import layers
-from tensorflow.keras import optimizers
-
 from sklearn.metrics import classification_report, confusion_matrix
 
-def createConvNext(input_shape, number_of_classes, trainable):
-    
-    try:
-        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
-        print("Running on TPU ", tpu.cluster_spec().as_dict()["worker"])
-        tf.config.experimental_connect_to_cluster(tpu)
-        tf.tpu.experimental.initialize_tpu_system(tpu)
-        strategy = tf.distribute.experimental.TPUStrategy(tpu)
-    except ValueError:
-        print("Not connected to a TPU runtime. Using CPU/GPU strategy")
-        strategy = tf.distribute.MirroredStrategy()
-
-    with strategy.scope():   # loading pretrained conv base model
-    
-        conv_base = tf.keras.applications.ConvNeXtBase(
-            #model_name="convnext_base",
-            include_top=False,
-            include_preprocessing=True,
-            weights= "imagenet",
-            input_tensor=None,
-            input_shape=None,
-            pooling=None,
-            classes=1000
-        )
-        #for layer in conv_base.layers:
-        #    layer.trainable = trainable        
-        conv_base.trainable = trainable
-    
-        dropout_rate = 0.2
-        model = models.Sequential()
-       
-        model.add(conv_base)
-        model.add(layers.GlobalMaxPooling2D(name="gap"))
-        #model.add(layers.Flatten(name="flatten"))
-        if dropout_rate > 0:
-            model.add(layers.Dropout(dropout_rate, name="dropout_out"))
-        #model.add(layers.Dense(256, activation='relu', name="fc1"))
-        model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
-        
-        model.compile(
-            #optimizer=optimizers.RMSprop(lr=2e-5),a
-            optimizer=optimizers.Adam(learning_rate=0.0001),
-            loss="categorical_crossentropy",
-            metrics=["acc"],
-        )
-
-        model.summary()
-        
-    return model
-
-def createEfficientNet(input_shape, number_of_classes, trainable):
-    
-    try:
-        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
-        print("Running on TPU ", tpu.cluster_spec().as_dict()["worker"])
-        tf.config.experimental_connect_to_cluster(tpu)
-        tf.tpu.experimental.initialize_tpu_system(tpu)
-        strategy = tf.distribute.experimental.TPUStrategy(tpu)
-    except ValueError:
-        print("Not connected to a TPU runtime. Using CPU/GPU strategy")
-        strategy = tf.distribute.MirroredStrategy()
-
-    with strategy.scope():   # loading pretrained conv base model
-    
-        conv_base = tf.keras.applications.EfficientNetB4(weights="imagenet", include_top=False, input_shape=input_shape)    
-    
-        #for layer in conv_base.layers:
-        #    layer.trainable = trainable        
-        conv_base.trainable = trainable
-    
-        dropout_rate = 0.2
-        model = models.Sequential()
-
-        """ Alternative creation
-        headModel = conv_base.output
-        headModel = layers.GlobalMaxPooling2D(name="gap")(headModel)
-        headModel = layers.Flatten(name="flatten")(headModel)
-        headModel = layers.Dense(256, activation='relu', name="fc1")(headModel)
-        if dropout_rate > 0:
-         headModel = layers.Dropout(dropout_rate, name="dropout_out")(headModel)
-        headModel = layers.Dense(number_of_classes, activation="softmax", name="fc_out")(headModel)
-        model = Model(inputs=conv_base.input, outputs=headModel)
-        """
-        
-        model.add(conv_base)
-        model.add(layers.GlobalMaxPooling2D(name="gap"))
-        #model.add(layers.Flatten(name="flatten"))
-        if dropout_rate > 0:
-            model.add(layers.Dropout(dropout_rate, name="dropout_out"))
-        #model.add(layers.Dense(256, activation='relu', name="fc1"))
-        model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
-        
-        model.compile(
-            #optimizer=optimizers.RMSprop(lr=2e-5),a
-            optimizer=optimizers.Adam(learning_rate=0.0001),
-            loss="categorical_crossentropy",
-            metrics=["acc"],
-        )
-
-        model.summary()
-        
-    return model
-
-def createResNetV2(input_shape, number_of_classes, trainable):
-    
-    try:
-        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
-        print("Running on TPU ", tpu.cluster_spec().as_dict()["worker"])
-        tf.config.experimental_connect_to_cluster(tpu)
-        tf.tpu.experimental.initialize_tpu_system(tpu)
-        strategy = tf.distribute.experimental.TPUStrategy(tpu)
-    except ValueError:
-        print("Not connected to a TPU runtime. Using CPU/GPU strategy")
-        strategy = tf.distribute.MirroredStrategy()
-
-    with strategy.scope():
-  
-        """ Alternative output layers
-        # Load the ResNet50 model with pre-trained weights
-        base_model = tf.keras.applications.ResNet50V2(weights='imagenet', include_top=False, input_shape=input_shape)
-
-        # Freeze the base model layers (optional for fine-tuning)
-        for layer in base_model.layers:
-            layer.trainable = False
-
-        # Add custom layers on top of ResNet50
-        x = base_model.output
-        x = layers.GlobalAveragePooling2D()(x)
-        x = layers.Dense(1024, activation='relu')(x)
-        x = layers.Dense(512, activation='relu')(x)
-        predictions = layers.Dense(number_of_classes, activation='softmax')(x)
-
-        # Create the final model
-        model = Model(inputs=base_model.input, outputs=predictions)
-        """
-
-        baseModel = tf.keras.applications.ResNet50V2(include_top=False, 
-                                                  weights= "imagenet", #None
-                                                  input_tensor=None, 
-                                                  input_shape=input_shape,
-                                                  pooling=None, #max
-                                                  classes=number_of_classes,
-                                                  classifier_activation="softmax")
-        # Freeze layers for transfer learning
-        for layer in baseModel.layers:
-            layer.trainable = trainable
-            
-        # Used when using weights = "imagenet"
-        headModel = baseModel.output
-        headModel = layers.AveragePooling2D(pool_size=(7, 7))(headModel)
-        headModel = layers.Flatten(name="flatten")(headModel)
-        headModel = layers.Dense(256, activation="relu")(headModel)
-        headModel = layers.Dropout(0.5)(headModel)
-        headModel = layers.Dense(number_of_classes, activation="softmax")(headModel)
-        model = Model(inputs=baseModel.input, outputs=headModel)
-        
-        model.compile(
-            optimizer="adam", 
-            loss="categorical_crossentropy", 
-            metrics=["accuracy"]
-        )
-        model.summary()
-    
-        print("Learnable parameters:", model.count_params())
-
-    return model    
 
 def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
     
@@ -214,7 +39,7 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
         validation_split=0.2
     )
     """
-    if modelType == "Efficient":
+    if modelType == "EfficientNetB4":
         # Settings from AMT
         train_datagen = ImageDataGenerator(
             rotation_range = 180,
@@ -274,20 +99,32 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
 
 if __name__=='__main__': 
     
+    parser = argparse.ArgumentParser()
+    
+    # Arguments to be changed 
+    parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase
+    parser.add_argument('--dataDir', default='../datasets/NI2-19cls') # Path to dataset
+    parser.add_argument('--modelName', default='EfficientNetB4-softmax-19cls-75.h5') # Name of model weights
+    parser.add_argument('--batch', default='32', type=int) # Batch size
+        
+    args = parser.parse_args()
+    
+    print(args)
+    
     # Directory with subdirectories for each class with cropped images in jpg format
     #data_dir = '../datasets/NI2-19cls'
-    data_dir = '../../data/NI2-19cls'
+    #data_dir = '../../data/NI2-19cls'
+    data_dir = args.dataDir
     # Directory for saving h5 models for each run
     models_dir = './models_save'   
     log_dir = './hparam_tuning19cls'
     
-    modelType = "EfficientNetB4"
+    modelType = args.modelType
+    #modelType = "EfficientNetB4"
     #modelType = "ResNet50v2"
     #modelType = "ConvNeXtBase"
     
-    base_layers_trainable = False    
-    epochs = 80 # EfficientNetB4, ResNet50V2, ConvNeXtBase with imagenet
-    batch_size = 32
+    batch_size = args.batch
 
     image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXtBase
     #image_size = 299 # InceptionV3
@@ -302,17 +139,12 @@ if __name__=='__main__':
 
     train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, modelType)
 
-    if modelType == "ResNet50v2": 
-        model = tf.keras.models.load_model(models_dir + '/' +  'ResNet50v2-softmax-19cls-80.h5')
-    if modelType == "EfficientNetB4": 
-        model = tf.keras.models.load_model(models_dir + '/' +  'EfficientNetB4-softmax-19cls-80.h5')
-    if modelType == "ConvNeXtBase": 
-        model = tf.keras.models.load_model(models_dir + '/' +  'ConvNeXtBase-softmax-19cls-80.h5')
+    model = tf.keras.models.load_model(models_dir + '/' +  args.modelName)
     
     model.summary()
     
     print('Model predict')
-    Y_pred = model.predict(validation_generator) #, 173//batch_size+1
+    Y_pred = model.predict(validation_generator) 
     y_pred = np.argmax(Y_pred, axis=1)
     print('Confusion Matrix')
     print(classification_report(validation_generator.classes, y_pred))
@@ -328,6 +160,6 @@ if __name__=='__main__':
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    plt.savefig('confmatrix_test.png')
+    plt.savefig(modelType + '_confmatrix_test.png')
     plt.close(figure)
 
