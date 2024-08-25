@@ -22,7 +22,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix
 
 
-def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
+def createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=True, seed = 1):
     
     # Train data genrator
     """
@@ -39,7 +39,7 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
         validation_split=0.2
     )
     """
-    if modelType == "EfficientNetB4":
+    if noImageRescaling: # EfficientNetB4 used in pipeline
         # Settings from AMT
         train_datagen = ImageDataGenerator(
             rotation_range = 180,
@@ -106,6 +106,7 @@ if __name__=='__main__':
     parser.add_argument('--dataDir', default='../datasets/NI2-19cls') # Path to dataset
     parser.add_argument('--modelName', default='EfficientNetB4-19cls-75.h5') # Name of model weights
     parser.add_argument('--batch', default='32', type=int) # Batch size
+    parser.add_argument('--noImageRescaling', default='', type=bool) # Default image rescaling False (Multiply pixels with 1.0/255)
         
     args = parser.parse_args()
     
@@ -137,7 +138,7 @@ if __name__=='__main__':
 
     input_shape= (image_size, image_size, 3)
 
-    train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, modelType)
+    train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=args.noImageRescaling)
 
     model = tf.keras.models.load_model(models_dir + '/' +  args.modelName)
     

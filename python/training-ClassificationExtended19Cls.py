@@ -195,7 +195,7 @@ def createResNetV2(input_shape, number_of_classes, trainable):
 
     return model    
 
-def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
+def createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=True, seed = 1):
     
     # Train data genrator
     """
@@ -212,7 +212,7 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
         validation_split=0.2
     )
     """
-    if modelType == "EfficientNetB4":
+    if noImageRescaling: # EfficientNetB4 used in pipeline
         # Settings from AMT
         train_datagen = ImageDataGenerator(
             rotation_range = 180,
@@ -281,6 +281,7 @@ if __name__=='__main__':
     parser.add_argument('--patience', default='5', type=int) # Patience epochs before early stopping (Min. validation loss)   
     parser.add_argument('--batch', default='32', type=int) # Batch size
     parser.add_argument('--trainBaseLayes', default='', type=bool) # Default false when no parameter (finetune base layers of model)
+    parser.add_argument('--noImageRescaling', default='', type=bool) # Default image rescaling False (Rescaling then multiply pixels with 1.0/255)
         
     args = parser.parse_args()
     
@@ -322,7 +323,7 @@ if __name__=='__main__':
     if modelType == "ConvNeXtBase":
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable)
 
-    train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, modelType)
+    train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=args.noImageRescaling)
 
     # Extend with examed hyperparameters
     # HP_BATCH_SIZE = hp.HParam('batch_size', hp.Discrete([32]))
