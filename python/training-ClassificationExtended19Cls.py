@@ -369,9 +369,9 @@ if __name__=='__main__':
     print('F1-score:', f1_score)
 
     if args.imageRescaling:    
-        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.h5')
+        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-ExtRescaled.keras')
     else:
-        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.h5')
+        model.save(models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext.keras')
 
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
