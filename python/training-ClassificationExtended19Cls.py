@@ -361,7 +361,7 @@ if __name__=='__main__':
         myCallbacks = [
             tf.keras.callbacks.TensorBoard(log_dir),
             ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_accuracy', mode='max'),
-            EarlyStopping(monitor='val_accuracy', patience=args.patience, restore_best_weights=True)
+            EarlyStopping(monitor='val_accuracy',  mode='max', patience=args.patience, restore_best_weights=True)
         ]
     else:
         myCallbacks = [
