@@ -370,8 +370,8 @@ if __name__=='__main__':
     ]
     
     if args.modelName != "": 
-        print("Finetuning model loading weights", args.ModelName)
-        model.load_weights(models_dir + '/' + args.ModelName)
+        print("Finetuning model loading weights", args.modelName)
+        model.load_weights(models_dir + '/' + args.modelName)
  
     print(args)
     
