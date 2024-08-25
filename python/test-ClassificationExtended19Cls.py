@@ -109,9 +109,7 @@ if __name__=='__main__':
     parser.add_argument('--noImageRescaling', default='', type=bool) # Default image rescaling False (Multiply pixels with 1.0/255)
         
     args = parser.parse_args()
-    
-    print(args)
-    
+        
     # Directory with subdirectories for each class with cropped images in jpg format
     #data_dir = '../datasets/NI2-19cls'
     #data_dir = '../../data/NI2-19cls'
@@ -143,6 +141,8 @@ if __name__=='__main__':
     model = tf.keras.models.load_model(models_dir + '/' +  args.modelName)
     
     model.summary()
+
+    print(args)
     
     print('Model predict')
     Y_pred = model.predict(validation_generator) 

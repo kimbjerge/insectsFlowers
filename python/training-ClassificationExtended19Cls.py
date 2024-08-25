@@ -285,8 +285,6 @@ if __name__=='__main__':
         
     args = parser.parse_args()
     
-    print(args)
- 
     # Directory with subdirectories for each class with cropped images in jpg format
     #data_dir = '../datasets/NI2-19cls'
     #data_dir = '../../data/NI2-19cls'
@@ -341,6 +339,8 @@ if __name__=='__main__':
         ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
         EarlyStopping(monitor='val_loss', patience=args.patience, restore_best_weights=True)
     ]
+ 
+    print(args)
     
     #history = model.fit_generator(
     history = model.fit(
