@@ -142,13 +142,13 @@ Working with tensorflow version 2.3.0:
 
 python/training-ClassificationNetTest19Cls.py - Possible to train ResNetv50 and EfficientNetB4 based on datasets/NI2-19cls
 
-python/test-ClassificatonNetTest19Cls.py - Validating above trained models
+python/test-ClassificationNetTest19Cls.py - Validating above trained models
 
 Working with tensorflow version 2.17.0:
 
 python/training-ClassificationExtended19Cls.py - Possible to train ResNetv50, EfficientNetB4 and ConvNeXtBase based on datasets/NI2-19cls
 
-python/test-ClassificatonNetTest19Cls.py - Validating above trained models
+python/test-ClassificationNetTest19Cls.py - Validating above trained models
 
 
 # Plotting results for monitoring in 2020 and 2021 #
