@@ -299,7 +299,7 @@ if __name__=='__main__':
     #modelType = "ResNet50v2"
     #modelType = "ConvNeXtBase"
     
-    base_layers_trainable = args.trainBaseLayes    
+    base_layers_trainable = args.trainBaseLayers    
     epochs = args.epochs
     batch_size = args.batch
 
