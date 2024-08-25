@@ -195,7 +195,7 @@ def createResNetV2(input_shape, number_of_classes, trainable):
 
     return model    
 
-def createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=True, seed = 1):
+def createDataGenerators(data_dir, image_size, batch_size, imageRescaling=False, seed = 1):
     
     # Train data genrator
     """
@@ -212,22 +212,7 @@ def createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=True
         validation_split=0.2
     )
     """
-    if noImageRescaling: # EfficientNetB4 used in pipeline
-        # Settings from AMT
-        train_datagen = ImageDataGenerator(
-            rotation_range = 180,
-            horizontal_flip = True,
-            vertical_flip = True,
-            zoom_range=0.3,
-            validation_split=0.2,
-            brightness_range=[0.9, 1.1]
-        )
-    
-        # Note that the validation data should not be augmented!
-        test_datagen = ImageDataGenerator(
-            validation_split=0.2
-        )
-    else:
+    if imageRescaling: 
         # Settings from AMT
         train_datagen = ImageDataGenerator(
             rescale=1.0/255,
@@ -243,8 +228,23 @@ def createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=True
         test_datagen = ImageDataGenerator(
             rescale=1.0/255,
             validation_split=0.2
+        )    
+    else: # EfficientNetB4 used in pipeline (No rescaling)
+        # Settings from AMT
+        train_datagen = ImageDataGenerator(
+            rotation_range = 180,
+            horizontal_flip = True,
+            vertical_flip = True,
+            zoom_range=0.3,
+            validation_split=0.2,
+            brightness_range=[0.9, 1.1]
         )
     
+        # Note that the validation data should not be augmented!
+        test_datagen = ImageDataGenerator(
+            validation_split=0.2
+        )
+
     train_generator = train_datagen.flow_from_directory(
         # This is the target directory
         data_dir,
@@ -280,8 +280,8 @@ if __name__=='__main__':
     parser.add_argument('--epochs', default='100', type=int) # Training epochs
     parser.add_argument('--patience', default='5', type=int) # Patience epochs before early stopping (Min. validation loss)   
     parser.add_argument('--batch', default='32', type=int) # Batch size
-    parser.add_argument('--trainBaseLayes', default='', type=bool) # Default false when no parameter (finetune base layers of model)
-    parser.add_argument('--noImageRescaling', default='', type=bool) # Default image rescaling False (Rescaling then multiply pixels with 1.0/255)
+    parser.add_argument('--trainBaseLayers', default='', type=bool) # Default false when no parameter (finetune base layers of model)
+    parser.add_argument('--imageRescaling', default='', type=bool) # Default image rescaling False (Rescaling then multiply pixels with 1.0/255)
         
     args = parser.parse_args()
     
@@ -321,7 +321,7 @@ if __name__=='__main__':
     if modelType == "ConvNeXtBase":
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable)
 
-    train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, noImageRescaling=args.noImageRescaling)
+    train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, imageRescaling=args.imageRescaling)
 
     # Extend with examed hyperparameters
     # HP_BATCH_SIZE = hp.HParam('batch_size', hp.Discrete([32]))
