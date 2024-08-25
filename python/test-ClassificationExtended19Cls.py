@@ -161,6 +161,6 @@ if __name__=='__main__':
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    plt.savefig(modelType + '_confmatrix_test.png')
+    plt.savefig(args.modelName.split('.')[0] + '_confmatrix_test.png')
     plt.close(figure)
 
