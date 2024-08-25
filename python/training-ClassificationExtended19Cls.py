@@ -69,7 +69,7 @@ def createConvNext(input_shape, number_of_classes, trainable):
         model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
         
         if trainable:
-            learning_rate = 0.0001 # Learning rate for finetuning
+            learning_rate = 0.00005 # Learning rate for finetuning
         else:
             learning_rate = 0.0001 
             
@@ -127,7 +127,7 @@ def createEfficientNet(input_shape, number_of_classes, trainable):
         model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
 
         if trainable:
-            learning_rate = 0.0001 # Learning rate for finetuning
+            learning_rate = 0.00005 # Learning rate for finetuning
         else:
             learning_rate = 0.0001 
         
@@ -197,7 +197,7 @@ def createResNetV2(input_shape, number_of_classes, trainable):
         model = Model(inputs=baseModel.input, outputs=headModel)
         
         if trainable:
-            learning_rate = 0.0001 # Learning rate for finetuning
+            learning_rate = 0.00005 # Learning rate for finetuning
         else:
             learning_rate = 0.0001 
 
@@ -360,8 +360,8 @@ if __name__=='__main__':
         model.load_weights(models_dir + '/' + args.modelName)
         myCallbacks = [
             tf.keras.callbacks.TensorBoard(log_dir),
-            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_accuracy', mode='max'),
-            EarlyStopping(monitor='val_accuracy',  mode='max', patience=args.patience, restore_best_weights=True)
+            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_acc', mode='max'),
+            EarlyStopping(monitor='val_acc',  mode='max', patience=args.patience, restore_best_weights=True)
         ]
     else:
         myCallbacks = [
