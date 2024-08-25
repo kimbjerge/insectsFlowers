@@ -333,7 +333,7 @@ if __name__=='__main__':
     input_shape= (image_size, image_size, 3)
 
     finetuneName = ""
-    if args.ModelName != "":
+    if args.modelName != "":
         base_layers_trainable = True
         finetuneName = "-Finetuned"
 
@@ -361,13 +361,15 @@ if __name__=='__main__':
     else:
         best_model_name = models_dir + '/' +  modelType + '-19cls-' + str(epochs) + '-Ext' + finetuneName + '.keras'
         
+    print("Saving best model as", best_model_name)
+        
     myCallbacks = [
         tf.keras.callbacks.TensorBoard(log_dir),
         ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
         EarlyStopping(monitor='val_loss', patience=args.patience, restore_best_weights=True)
     ]
     
-    if args.ModelName != "": 
+    if args.modelName != "": 
         print("Finetuning model loading weights", args.ModelName)
         model.load_weights(models_dir + '/' + args.ModelName)
  
