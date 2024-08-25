@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Aug 23 11:03:46 2024
+Created on Mon Mar 21 13:48:46 2022
 
 @author: Kim Bjerge
     
-    Training insect classifier with ResNet50V2, EfficientNetB4, ConvNeXtBase
+    Training insect classifier with ResNet or EfficientNet
 """
 
+# Options: EfficientNetB0, EfficientNetB1, EfficientNetB2, EfficientNetB3
+# Higher the number, the more complex the model is.
+
+import io
 import numpy as np
 import seaborn as sns
 import tensorflow as tf
@@ -17,13 +21,12 @@ config = tf.compat.v1.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.4
 session = tf.compat.v1.Session(config=config)
 
-#from tensorboard.plugins.hparams import api as hp
+from tensorboard.plugins.hparams import api as hp
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import Model
 from tensorflow.keras import models
 from tensorflow.keras import layers
 from tensorflow.keras import optimizers
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -211,7 +214,7 @@ def createDataGenerators(data_dir, image_size, batch_size, modelType, seed = 1):
         validation_split=0.2
     )
     """
-    if modelType == "EfficientNetB4":
+    if modelType == "Efficient":
         # Settings from AMT
         train_datagen = ImageDataGenerator(
             rotation_range = 180,
@@ -290,8 +293,6 @@ if __name__=='__main__':
     #image_size = 299 # InceptionV3
     number_of_classes = 19
     
-    #NUM_DATA = 7360
-    #NUM_DATA = 5745 # 10 classes
     NUM_DATA = 13817 # 19 classes (13628)
     TEST_SPLIT = 0.2
     NUM_TRAIN = NUM_DATA*(1.0 - TEST_SPLIT)
@@ -299,53 +300,18 @@ if __name__=='__main__':
 
     input_shape= (image_size, image_size, 3)
 
-    if modelType == "ResNet50v2":
-        model = createResNetV2(input_shape, number_of_classes, base_layers_trainable)
-    if modelType == "EfficientNetB4":
-        model = createEfficientNet(input_shape, number_of_classes, base_layers_trainable)
-    if modelType == "ConvNeXtBase":
-        model = createConvNext(input_shape, number_of_classes, base_layers_trainable)
-
     train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, modelType)
 
-    # Extend with examed hyperparameters
-    # HP_BATCH_SIZE = hp.HParam('batch_size', hp.Discrete([32]))
-    # HP_IMG_SIZE = hp.HParam('image_size', hp.Discrete([224]))
-
-    # hparams = {
-    #         HP_BATCH_SIZE: batch_size,
-    #         HP_IMG_SIZE: image_size
-    #         }
+    if modelType == "ResNet50v2": 
+        model = tf.keras.models.load_model(models_dir + '/' +  'ResNet50v2-softmax-19cls-80.h5')
+    if modelType == "EfficientNetB4": 
+        model = tf.keras.models.load_model(models_dir + '/' +  'EfficientNetB4-softmax-19cls-80.h5')
+    if modelType == "ConvNeXtBase": 
+        model = tf.keras.models.load_model(models_dir + '/' +  'ConvNeXtBase-softmax-19cls-80.h5')
     
-    best_model_name = models_dir + '/' + modelType + '.model.keras'
-    
-    myCallbacks = [
-        tf.keras.callbacks.TensorBoard(log_dir),
-        ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_loss', mode='min'),
-        EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-    ]
-    
-    #history = model.fit_generator(
-    history = model.fit(
-        train_generator,
-        #steps_per_epoch=int(NUM_TRAIN // batch_size)-1,
-        #steps_per_epoch=train_generator.samples // batch_size,
-        epochs=epochs,
-        validation_data=validation_generator,
-        #validation_steps=int(NUM_TEST // batch_size)-1,
-        #validation_steps=validation_generator.samples // batch_size,
-        #workers=8,
-        #verbose=1,
-        callbacks=myCallbacks
-        #callbacks=[
-        #           tf.keras.callbacks.TensorBoard(log_dir),
-        #           hp.KerasCallback(log_dir, hparams),
-        #           ],
-        #use_multiprocessing=True,
-    )
+    model.summary()
     
     print('Model predict')
-    #Y_pred = model.predict_generator(validation_generator) #, 173//batch_size+1
     Y_pred = model.predict(validation_generator) #, 173//batch_size+1
     y_pred = np.argmax(Y_pred, axis=1)
     print('Confusion Matrix')
@@ -353,8 +319,6 @@ if __name__=='__main__':
     report = classification_report(validation_generator.classes, y_pred, output_dict=True)
     f1_score = report['weighted avg']['f1-score']
     print('F1-score:', f1_score)
-
-    model.save(models_dir + '/' +  modelType + '-softmax-19cls-' + str(epochs) + '.h5')
 
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
@@ -364,6 +328,6 @@ if __name__=='__main__':
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    plt.savefig(modelType + '-confmatrix-19cls.png')
+    plt.savefig('confmatrix_test.png')
     plt.close(figure)
 
