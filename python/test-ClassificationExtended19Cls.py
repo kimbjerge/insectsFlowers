@@ -102,7 +102,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     
     # Arguments to be changed 
-    parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase
+    #parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase
     parser.add_argument('--dataDir', default='../datasets/NI2-19cls') # Path to dataset
     parser.add_argument('--modelName', default='EfficientNetB4-19cls-75.h5') # Name of model weights
     parser.add_argument('--batch', default='32', type=int) # Batch size
@@ -118,7 +118,7 @@ if __name__=='__main__':
     models_dir = './models_save'   
     log_dir = './hparam_tuning19cls'
     
-    modelType = args.modelType
+    #modelType = args.modelType
     #modelType = "EfficientNetB4"
     #modelType = "ResNet50v2"
     #modelType = "ConvNeXtBase"
