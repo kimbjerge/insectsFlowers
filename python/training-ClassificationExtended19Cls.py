@@ -48,7 +48,7 @@ def createConvNext(input_shape, number_of_classes, trainable, useTiny=False):
                 include_preprocessing=True,
                 weights= "imagenet",
                 input_tensor=None,
-                input_shape=None,
+                input_shape=input_shape,
                 pooling=None
             )
         else:        
@@ -57,7 +57,7 @@ def createConvNext(input_shape, number_of_classes, trainable, useTiny=False):
                 include_preprocessing=True,
                 weights= "imagenet",
                 input_tensor=None,
-                input_shape=None,
+                input_shape=input_shape,
                 pooling=None
             )
         
@@ -111,7 +111,7 @@ def createMobileNetV2(input_shape, number_of_classes, trainable):
             alpha=1.0,
             weights= "imagenet",
             input_tensor=None,
-            input_shape=None,
+            input_shape=input_shape,
             pooling=None
         )
         
