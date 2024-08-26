@@ -15,7 +15,7 @@ import argparse
 
 ## LIMIT MEMORY - Can be uncommented
 config = tf.compat.v1.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.4
+config.gpu_options.per_process_gpu_memory_fraction = 0.95
 session = tf.compat.v1.Session(config=config)
 
 #from tensorboard.plugins.hparams import api as hp
