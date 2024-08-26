@@ -360,8 +360,8 @@ if __name__=='__main__':
         model.load_weights(models_dir + '/' + args.modelName)
         myCallbacks = [
             tf.keras.callbacks.TensorBoard(log_dir),
-            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_acc', mode='max'),
-            EarlyStopping(monitor='val_acc',  mode='max', patience=args.patience, restore_best_weights=True)
+            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_accuracy', mode='max'),
+            EarlyStopping(monitor='val_accuracy',  mode='max', patience=args.patience, restore_best_weights=True)
         ]
     else:
         myCallbacks = [
