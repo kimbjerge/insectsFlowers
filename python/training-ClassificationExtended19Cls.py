@@ -53,7 +53,7 @@ def createConvNext(input_shape, number_of_classes, trainable):
             classes=1000
         )
         
-        for layer in conv_base.layers: #[-10:]:  # Unfreeze the last 10 layers
+        for layer in conv_base.layers[-10:]:  # Unfreeze the last 10 layers
             layer.trainable = trainable        
         conv_base.trainable = trainable
     
