@@ -424,11 +424,18 @@ if __name__=='__main__':
     if args.modelName != "": 
         print("Finetuning model loading weights", args.modelName)
         model.load_weights(models_dir + '/' + args.modelName)
-        myCallbacks = [
-            tf.keras.callbacks.TensorBoard(log_dir),
-            ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_accuracy', mode='max'),
-            EarlyStopping(monitor='val_accuracy',  mode='max', patience=args.patience, restore_best_weights=True)
-        ]
+        if "ConvNeXt" in args.modelName:
+            myCallbacks = [
+                tf.keras.callbacks.TensorBoard(log_dir),
+                ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_acc', mode='max'),
+                EarlyStopping(monitor='val_acc',  mode='max', patience=args.patience, restore_best_weights=True)
+            ]
+        else:
+            myCallbacks = [
+                tf.keras.callbacks.TensorBoard(log_dir),
+                ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_accuracy', mode='max'),
+                EarlyStopping(monitor='val_accuracy',  mode='max', patience=args.patience, restore_best_weights=True)
+            ]
     else:
         myCallbacks = [
             tf.keras.callbacks.TensorBoard(log_dir),
