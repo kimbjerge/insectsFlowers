@@ -156,7 +156,12 @@ if __name__=='__main__':
     Y_pred = model.predict(validation_generator) 
     y_pred = np.argmax(Y_pred, axis=1)
     print('Confusion Matrix')
-    print(classification_report(validation_generator.classes, y_pred))
+    class_report = classification_report(validation_generator.classes, y_pred)
+    print(class_report)
+    with open('modelsummaries.txt','a') as f:
+        f.write('Confusion Matrix\n')
+        f.write(class_report)
+        
     report = classification_report(validation_generator.classes, y_pred, output_dict=True)
     f1_score = report['weighted avg']['f1-score']
     precision = report['weighted avg']['precision']
