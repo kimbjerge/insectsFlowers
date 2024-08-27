@@ -151,8 +151,20 @@ if __name__=='__main__':
     print(classification_report(validation_generator.classes, y_pred))
     report = classification_report(validation_generator.classes, y_pred, output_dict=True)
     f1_score = report['weighted avg']['f1-score']
+    precision = report['weighted avg']['precision']
+    recall = report['weighted avg']['recall']
+        
+    print('Precision:', precision)
+    print('Recall:', recall)
     print('F1-score:', f1_score)
-
+    
+    with open("classifiers.txt", "a") as myfile:
+        modelName = args.modelName.split('-')[0]
+        params = model.count_params()
+        str = "%s & %0.0f & %0.3f & %0.3f & %0.3f \\\\" % (modelName, params/1000000, precision, recall, f1_score)
+        myfile.write(str)
+        print(str)
+    
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
     figure = plt.figure(figsize=(8, 8))

@@ -422,15 +422,15 @@ if __name__=='__main__':
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable)
     if modelType == "ConvNeXtTiny":
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable, useTiny=True)
-    if modelType == "DenseNet201":
+    if modelType == "DenseNet201": # imageRescaling
         model = createSpecificCNN(input_shape, number_of_classes, base_layers_trainable, modelType)        
     if modelType == "EfficientNetB4":
         model = createEfficientNet(input_shape, number_of_classes, base_layers_trainable)
-    if modelType == "InceptionV3":
+    if modelType == "InceptionV3": # imageRescaling
         model = createSpecificCNN(input_shape, number_of_classes, base_layers_trainable, modelType)        
     if modelType == "MobileNetv2":
         model = createSpecificCNN(input_shape, number_of_classes, base_layers_trainable, modelType)
-    if modelType == "ResNet50v2":
+    if modelType == "ResNet50v2": # imageRescaling
         model = createResNetV2(input_shape, number_of_classes, base_layers_trainable)
         
     train_generator, validation_generator = createDataGenerators(data_dir, image_size, batch_size, imageRescaling=args.imageRescaling)
