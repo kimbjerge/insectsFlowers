@@ -106,7 +106,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     
     # Arguments to be changed 
-    #parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase
+    #parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase, ConvNeXtTiny, MobileNetv2, InceptionV3, DenseNet201
     parser.add_argument('--dataDir', default='../datasets/NI2-19cls') # Path to dataset
     parser.add_argument('--modelName', default='EfficientNetB4-19cls-80.keras') # Name of model weights
     parser.add_argument('--batch', default='32', type=int) # Batch size
@@ -122,15 +122,12 @@ if __name__=='__main__':
     models_dir = './models_save'   
     log_dir = './hparam_tuning19cls'
     
-    #modelType = args.modelType
-    #modelType = "EfficientNetB4"
-    #modelType = "ResNet50v2"
-    #modelType = "ConvNeXtBase"
-    
     batch_size = args.batch
 
-    image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXtBase
-    #image_size = 299 # InceptionV3
+    image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXtBase, ConvNeXtTiny, MobileNetv2, DenseNet201
+    if "InceptionV3" in args.modelName:
+        image_size = 299 # InceptionV3
+
     number_of_classes = 19
     
     NUM_DATA = 13817 # 19 classes (13628)
@@ -163,9 +160,10 @@ if __name__=='__main__':
         f.write(class_report)
         
     report = classification_report(validation_generator.classes, y_pred, output_dict=True)
-    f1_score = report['weighted avg']['f1-score']
+
     precision = report['weighted avg']['precision']
     recall = report['weighted avg']['recall']
+    f1_score = report['weighted avg']['f1-score']
         
     print('Precision:', precision)
     print('Recall:', recall)
