@@ -92,7 +92,7 @@ def createConvNext(input_shape, number_of_classes, trainable, useTiny=False):
         
     return model
 
-def createMobileNetV2(input_shape, number_of_classes, trainable):
+def createSpecificCNN(input_shape, number_of_classes, trainable, modelType):
     
     try:
         tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
@@ -106,68 +106,34 @@ def createMobileNetV2(input_shape, number_of_classes, trainable):
 
     with strategy.scope():   # loading pretrained conv base model
     
-        conv_base = tf.keras.applications.MobileNetV2(
-            include_top=False,
-            alpha=1.0,
-            weights= "imagenet",
-            input_tensor=None,
-            input_shape=input_shape,
-            pooling=None
-        )
-        
-        for layer in conv_base.layers: # [-10:]:  # Unfreeze the last 10 layers
-            layer.trainable = trainable        
-        conv_base.trainable = trainable
-    
-        dropout_rate = 0.2
-        model = models.Sequential()
-       
-        model.add(conv_base)
-        model.add(layers.GlobalMaxPooling2D(name="gap"))
-        #model.add(layers.Flatten(name="flatten"))
-        if dropout_rate > 0:
-            model.add(layers.Dropout(dropout_rate, name="dropout_out"))
-        #model.add(layers.Dense(256, activation='relu', name="fc1"))
-        model.add(layers.Dense(number_of_classes, activation="softmax", name="fc_out"))
-        
-        if trainable:
-            learning_rate = 0.00005 # Learning rate for finetuning
-        else:
-            learning_rate = 0.0001 
-            
-        model.compile(
-            optimizer=optimizers.Adam(learning_rate=learning_rate),
-            loss="categorical_crossentropy",
-            metrics=["acc"],
-        )
-        model.summary()
+        if modelType == "MobileNetV2":            
+            conv_base = tf.keras.applications.MobileNetV2(
+                include_top=False,
+                alpha=1.0,
+                weights= "imagenet",
+                input_tensor=None,
+                input_shape=input_shape,
+                pooling=None
+            )
 
-        print("Learnable parameters:", model.count_params(), "learning rate", learning_rate)
+        if modelType == "InceptionV3":  
+            conv_base = tf.keras.applications.InceptionV3(
+                include_top=False,
+                weights= "imagenet",
+                input_tensor=None,
+                input_shape=input_shape,
+                pooling=None
+            )
         
-    return model
-
-def createInceptionV3(input_shape, number_of_classes, trainable):
-    
-    try:
-        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
-        print("Running on TPU ", tpu.cluster_spec().as_dict()["worker"])
-        tf.config.experimental_connect_to_cluster(tpu)
-        tf.tpu.experimental.initialize_tpu_system(tpu)
-        strategy = tf.distribute.experimental.TPUStrategy(tpu)
-    except ValueError:
-        print("Not connected to a TPU runtime. Using CPU/GPU strategy")
-        strategy = tf.distribute.MirroredStrategy()
-
-    with strategy.scope():   # loading pretrained conv base model
-    
-        conv_base = tf.keras.applications.InceptionV3(
-            include_top=False,
-            weights= "imagenet",
-            input_tensor=None,
-            input_shape=input_shape,
-            pooling=None
-        )
-        
+        if modelType == "DenseNet201":
+            conv_base = tf.keras.applications.DenseNet201(
+                include_top=False,
+                weights= "imagenet",
+                input_tensor=None,
+                input_shape=input_shape,
+                pooling=None
+            )
+                 
         for layer in conv_base.layers: # [-10:]:  # Unfreeze the last 10 layers
             layer.trainable = trainable        
         conv_base.trainable = trainable
@@ -408,7 +374,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     
     # Arguments to be changed 
-    parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase, ConvNeXtTiny, MobileNetv2, InceptionV3
+    parser.add_argument('--modelType', default='EfficientNetB4') # Model to be trained EfficientNetB4, ResNet50v2, ConvNeXtBase, ConvNeXtTiny, MobileNetv2, InceptionV3, DenseNet201
     parser.add_argument('--dataDir', default='../datasets/NI2-19cls') # Path to dataset
     parser.add_argument('--epochs', default='100', type=int) # Training epochs
     parser.add_argument('--patience', default='5', type=int) # Patience epochs before early stopping (Min. validation loss)   
@@ -429,9 +395,6 @@ if __name__=='__main__':
     log_dir = './hparam_tuning19cls'
     
     modelType = args.modelType
-    #modelType = "EfficientNetB4"
-    #modelType = "ResNet50v2"
-    #modelType = "ConvNeXtBase"
 
     finetuneName = ""
     if args.modelName != "":
@@ -442,7 +405,7 @@ if __name__=='__main__':
     epochs = args.epochs
     batch_size = args.batch
 
-    image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXtBase
+    image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXt, DenseNet201
     if modelType == "InceptionV3":
         image_size = 299 # InceptionV3
         
@@ -459,12 +422,14 @@ if __name__=='__main__':
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable)
     if modelType == "ConvNeXtTiny":
         model = createConvNext(input_shape, number_of_classes, base_layers_trainable, useTiny=True)
+    if modelType == "DenseNet201":
+        model = createSpecificCNN(input_shape, number_of_classes, base_layers_trainable, modelType)        
     if modelType == "EfficientNetB4":
         model = createEfficientNet(input_shape, number_of_classes, base_layers_trainable)
     if modelType == "InceptionV3":
-        model = createInceptionV3(input_shape, number_of_classes, base_layers_trainable)        
+        model = createSpecificCNN(input_shape, number_of_classes, base_layers_trainable, modelType)        
     if modelType == "MobileNetv2":
-        model = createMobileNetV2(input_shape, number_of_classes, base_layers_trainable)        
+        model = createSpecificCNN(input_shape, number_of_classes, base_layers_trainable, modelType)
     if modelType == "ResNet50v2":
         model = createResNetV2(input_shape, number_of_classes, base_layers_trainable)
         
