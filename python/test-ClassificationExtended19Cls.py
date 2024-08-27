@@ -97,6 +97,10 @@ def createDataGenerators(data_dir, image_size, batch_size, imageRescaling=False,
     
     return train_generator, validation_generator
 
+def myprint(s):
+    with open('modelsummaries.txt','a') as f:
+        print(s, file=f)
+
 if __name__=='__main__': 
     
     parser = argparse.ArgumentParser()
@@ -141,6 +145,7 @@ if __name__=='__main__':
     model = tf.keras.models.load_model(models_dir + '/' +  args.modelName)
     
     model.summary()
+    model.summary(print_fn=myprint)
 
     print(args)
     
@@ -160,10 +165,8 @@ if __name__=='__main__':
     
     with open("classifiers.txt", "a") as myfile:
         modelName = args.modelName.split('-')[0]
-        modelSummary = model.summary()
-        str = "%s & ? & %0.3f & %0.3f & %0.3f \\\\" % (modelName, precision, recall, f1_score)
+        str = "%s & ? & %0.3f & %0.3f & %0.3f \\\\\n" % (modelName, precision, recall, f1_score)
         myfile.write(str)
-        myfile.write(modelSummary)
         print(str)
     
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
