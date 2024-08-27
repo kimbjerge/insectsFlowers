@@ -145,7 +145,10 @@ if __name__=='__main__':
     model = tf.keras.models.load_model(models_dir + '/' +  args.modelName)
     
     model.summary()
+    
     model.summary(print_fn=myprint)
+    with open('modelsummaries.txt','a') as f:
+        f.write(args.modelName + '\n')
 
     print(args)
     
