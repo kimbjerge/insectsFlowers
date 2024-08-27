@@ -443,7 +443,9 @@ if __name__=='__main__':
     batch_size = args.batch
 
     image_size = 224 # MobileNetV2, EfficientNetB4, ResNet50V2, ConvNeXtBase
-    #image_size = 299 # InceptionV3
+    if modelType == "InceptionV3":
+        image_size = 299 # InceptionV3
+        
     number_of_classes = 19
     
     NUM_DATA = 13817 # 19 classes (13628)
