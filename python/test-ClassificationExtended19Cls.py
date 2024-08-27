@@ -155,25 +155,29 @@ if __name__=='__main__':
     print('Confusion Matrix')
     class_report = classification_report(validation_generator.classes, y_pred)
     print(class_report)
-    with open('modelsummaries.txt','a') as f:
-        f.write('Confusion Matrix\n')
-        f.write(class_report)
-        
+
     report = classification_report(validation_generator.classes, y_pred, output_dict=True)
 
     precision = report['weighted avg']['precision']
     recall = report['weighted avg']['recall']
-    f1_score = report['weighted avg']['f1-score']
+    #f1_score = report['weighted avg']['f1-score'] # not the same as below???
+    f1_score = 2*(precision*recall)/(precision + recall)
         
     print('Precision:', precision)
     print('Recall:', recall)
     print('F1-score:', f1_score)
     
+    with open('modelsummaries.txt','a') as f:
+        f.write('Confusion Matrix\n')
+        f.write(class_report)
+        resStr = "Precision: %0.4f, Recall: %0.4f, F1-score: %0.4f \n\n" % (precision, recall, f1_score)
+        f.write(resStr)
+        
     with open("classifiers.txt", "a") as myfile:
         modelName = args.modelName.split('-')[0]
-        str = "%s & ? & %0.3f & %0.3f & %0.3f \\\\\n" % (modelName, precision, recall, f1_score)
-        myfile.write(str)
-        print(str)
+        resStr = "%s & ? & %0.3f & %0.3f & %0.3f \\\\\n" % (modelName, precision, recall, f1_score)
+        myfile.write(resStr)
+        print(resStr)
     
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
     conf = np.round(conf*100)
