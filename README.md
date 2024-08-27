@@ -142,13 +142,13 @@ Working with tensorflow version 2.3.0:
 
 python/training-ClassificationNetTest19Cls.py - Possible to train ResNetv50 and EfficientNetB4 based on datasets/NI2-19cls (Without fine-tuning of base layers)
 
-python/test-ClassificationNetTest19Cls.py - Validating above trained models
+python/test-ClassificationNetTest19Cls.py - Validating ResNetv50 and EfficientNetB4 trained models
 
 Working with tensorflow version 2.17.0:
 
 python/training-ClassificationExtended19Cls.py - Possible to train and fine-tune (base layers) of SOAT CNNs including: ResNetv50, EfficientNetB4, MobileNetv2, InceptionV3, DenseNet201, ConvNeXtTiny and ConvNeXtBase (Use datasets/NI2-19cls)
 
-python/test-ClassificationNetTest19Cls.py - Validating above trained models
+python/test-ClassificationExtended19Cls.py - Validating SOAT trained models. Save results to classifiers.txt and modelsummaries.txt and plotting confusion matrix.
 
 
 # Plotting results for monitoring in 2020 and 2021 #
