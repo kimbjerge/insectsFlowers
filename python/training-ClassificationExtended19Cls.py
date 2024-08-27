@@ -446,7 +446,7 @@ if __name__=='__main__':
     if args.modelName != "": 
         print("Finetuning model loading weights", args.modelName)
         model.load_weights(models_dir + '/' + args.modelName)
-        if "ConvNeXt" in args.modelName or "MobileNet" in args.modelName or "Inception" in args.modelName:
+        if "ConvNeXt" in args.modelName or "MobileNet" in args.modelName or "Inception" in args.modelName or "Dense" in args.modelName:
             myCallbacks = [
                 tf.keras.callbacks.TensorBoard(log_dir),
                 ModelCheckpoint(best_model_name, save_best_only=True, monitor='val_acc', mode='max'),
