@@ -160,9 +160,10 @@ if __name__=='__main__':
     
     with open("classifiers.txt", "a") as myfile:
         modelName = args.modelName.split('-')[0]
-        params = model.count_params()
-        str = "%s & %0.0f & %0.3f & %0.3f & %0.3f \\\\" % (modelName, params/1000, precision, recall, f1_score)
+        modelSummary = model.summary()
+        str = "%s & ? & %0.3f & %0.3f & %0.3f \\\\" % (modelName, precision, recall, f1_score)
         myfile.write(str)
+        myfile.write(modelSummary)
         print(str)
     
     conf = confusion_matrix(validation_generator.classes, y_pred, normalize='true')
