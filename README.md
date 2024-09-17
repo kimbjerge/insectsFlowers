@@ -17,6 +17,11 @@ envreq.txt - environment requirements
 
 condaInstall.sh - edit file to install conda environment on Linux
 
+## Datasets for training ##
+
+Datasets for training of the sematic segmentation of flowers (DeepLabv3), insect detector (YOLOv5 MIE) and classifier for taxa of arthropods can be downloaded from:
+https://zenodo.org/records/13772695
+
 ## Python source code files, configuration, models and scripts ##
 
 Python npy files with sorted results of detections, filtering and arthropods classification (2020, 2021) must be downloaded unzipped and copied to the subfolder python.
