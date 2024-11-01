@@ -5,7 +5,7 @@ The repository includes the essential Python code for the steps in the figure be
  Only the result data (CSV, npy), source code (sh, py), trained models and weights (pt, h5) are available)
 
 The work and results are described in the paper: "A deep learning pipeline for time-lapse camera monitoring of floral environments and insect populations".
-https://www.biorxiv.org/content/10.1101/2024.04.12.589205v2.full
+https://doi.org/10.1016/j.ecoinf.2024.102861  (bioRxiv:https://www.biorxiv.org/content/10.1101/2024.04.12.589205v2.full)
 
 ![Alt text](ProcessPipeline.png)
 
@@ -140,6 +140,8 @@ where the detectId will be updated with the following classification codes:
 16 - Small Tortoiseshell  <br />
 17 - Dragonflies  <br />
 18 - Honeybees
+
+![Alt text](Classes.png)
 
 ## Training and validation of arthropod classifier ##
 
