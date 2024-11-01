@@ -137,7 +137,7 @@ where the detectId will be updated with the following classification codes:
 13 - Grasshoppers  <br />
 14 - R. fulva  <br />
 15 - Satyrines  <br />
-16 - Small Tortoiseshell  <br />
+16 - Small tortoiseshell  <br />
 17 - Dragonflies  <br />
 18 - Honeybees
 
