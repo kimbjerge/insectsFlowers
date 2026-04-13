@@ -131,13 +131,13 @@ def cvMaskFlowers(pathImage, fileName, maskType='RGB', showMasks=False):
     
     fig.tight_layout()
     #KBE??? 
-    fig.savefig("../imagesTest/Data_2021_Dataset/ImgMskRed/" + fileName)
+    fig.savefig("../dataFlowers/ImgMsk/" + fileName)
     plt.show()
     
     #cv.imwrite("../imagesTest/Data_2021_Dataset/ImagesFlowRed/" + fileName, img)
     greyMask = cv.cvtColor(res, cv.COLOR_BGR2GRAY)
     ret, blackWhiteImg = cv.threshold(greyMask, 50, 255, cv.THRESH_BINARY)
-    cv.imwrite("../imagesTest/Data_2021_Dataset/MasksFlowRed/" + fileName.replace('JPG', 'PNG'), blackWhiteImg)
+    cv.imwrite("../dataFlowers/MasksFlow/" + fileName.replace('JPG', 'PNG'), blackWhiteImg)
 
     return yellow_percentage, white_percentage, red_percentage, flowers_percentage
     
@@ -221,7 +221,7 @@ if __name__=='__main__':
     #yellow, white, red, flowers = cvMaskFlowers(img_path, fileName, maskType='HSV',showMasks=False)
     #print(yellow, white, red, flowers)
     
-    path = "O:/Tech_TTH-KBE/NI_2/Kim/imagesTest/Data_2021_Dataset/ImagesFlow/"
+    path = "../dataFlowers/Images/"
     generateFlowerMasks(path)
 
     
