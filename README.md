@@ -62,7 +62,7 @@ DeepLabv3/TrainFlowers.sh - Trains flower sematic segmenation DeepLabv3 model ba
 
 python/CreateFlowerMasksForSegmentation.py - Converts images to the HSV color space and creates flower masks based on red/pink, yellow and white flowers. 
 
-dataFlowers/Images - Contains 13 sample images with flowers to generatr flower masks - two example images will generate false flower masks (Due to redish leaves)
+dataFlowers/Images - Contains 13 sample images with flowers to generate flower masks - two example images will generate false flower masks (Due to redish leaves) - false masks should be replaced with a black image when no flowers are present in the image.
 
 # Classified arthropods in taxonomic ranks #
 
